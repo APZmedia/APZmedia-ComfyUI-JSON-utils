@@ -27,9 +27,6 @@ class APZmediaDynamicCSVReader:
                 "selected_row": ("INT", {"default": 0, "min": 0, "max": 10000, "step": 1, "tooltip": "Row index to extract (0-based)"}),
                 "delimiter": ("STRING", {"default": ",", "tooltip": "CSV delimiter character"}),
                 "encoding": ("STRING", {"default": "utf-8", "tooltip": "File encoding"}),
-            },
-            "optional": {
-                "update_csv": ("BUTTON", {"default": "🔄 Update CSV"}),
             }
         }
     
@@ -48,7 +45,7 @@ class APZmediaDynamicCSVReader:
     CATEGORY = "APZmedia/CSV Utils"
     
     def read_csv_dynamic(self, csv_path: str, selected_row: int, delimiter: str = ",", 
-                        encoding: str = "utf-8", update_csv: bool = False) -> tuple:
+                        encoding: str = "utf-8") -> tuple:
         """
         Dynamic CSV reading with stored DataFrame and regenerated outputs
         
@@ -57,7 +54,6 @@ class APZmediaDynamicCSVReader:
             selected_row: Row index to extract (0-based)
             delimiter: CSV delimiter character
             encoding: File encoding
-            refresh_csv: Boolean to trigger CSV refresh and output regeneration
             
         Returns:
             tuple: Dynamic outputs based on CSV structure
@@ -67,14 +63,13 @@ class APZmediaDynamicCSVReader:
             if not csv_path or not os.path.exists(csv_path):
                 return "No file", 0, "File not found", "File not found", "{}"
             
-            # Load or refresh DataFrame when button is clicked
-            if update_csv or self.df is None:
+            # Load or refresh DataFrame when file path changes or DataFrame is None
+            if self.df is None or not hasattr(self, '_last_csv_path') or self._last_csv_path != csv_path:
                 self.df = pd.read_csv(csv_path, delimiter=delimiter, encoding=encoding)
                 self.column_names = self.df.columns.tolist()
                 self.row_count = len(self.df)
+                self._last_csv_path = csv_path
                 print(f"CSV loaded: {len(self.column_names)} columns, {self.row_count} rows")
-                if update_csv:
-                    print("CSV updated - outputs will be regenerated")
             
             # Validate selected row
             if selected_row >= self.row_count:
@@ -139,7 +134,7 @@ class APZmediaCSVReader:
                 "encoding": ("STRING", {"default": "utf-8", "tooltip": "File encoding"}),
             },
             "optional": {
-                "update_csv": ("BUTTON", {"default": "🔄 Update CSV"}),
+                "update_csv": ("BOOLEAN", {"default": False, "tooltip": "🔄 Click to update CSV and regenerate outputs"}),
             }
         }
     
