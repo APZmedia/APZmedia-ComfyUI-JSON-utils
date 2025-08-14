@@ -29,11 +29,7 @@ class APZmediaDynamicCSVReader:
                 "encoding": ("STRING", {"default": "utf-8", "tooltip": "File encoding"}),
             },
             "optional": {
-                "refresh_csv": ("BUTTON", {"default": "🔄 Refresh CSV"}),
-                "next_row": ("BUTTON", {"default": "⏭️ Next Row"}),
-                "prev_row": ("BUTTON", {"default": "⏮️ Previous Row"}),
-                "first_row": ("BUTTON", {"default": "⏪ First Row"}),
-                "last_row": ("BUTTON", {"default": "⏩ Last Row"}),
+                "update_csv": ("BUTTON",),
             }
         }
     
@@ -52,9 +48,7 @@ class APZmediaDynamicCSVReader:
     CATEGORY = "APZmedia/CSV Utils"
     
     def read_csv_dynamic(self, csv_path: str, selected_row: int, delimiter: str = ",", 
-                        encoding: str = "utf-8", refresh_csv: bool = False, 
-                        next_row: bool = False, prev_row: bool = False, 
-                        first_row: bool = False, last_row: bool = False) -> tuple:
+                        encoding: str = "utf-8", update_csv: bool = False) -> tuple:
         """
         Dynamic CSV reading with stored DataFrame and regenerated outputs
         
@@ -73,27 +67,14 @@ class APZmediaDynamicCSVReader:
             if not csv_path or not os.path.exists(csv_path):
                 return "No file", 0, "File not found", "File not found", "{}"
             
-            # Load or refresh DataFrame
-            if refresh_csv or self.df is None:
+            # Load or refresh DataFrame when button is clicked
+            if update_csv or self.df is None:
                 self.df = pd.read_csv(csv_path, delimiter=delimiter, encoding=encoding)
                 self.column_names = self.df.columns.tolist()
                 self.row_count = len(self.df)
                 print(f"CSV loaded: {len(self.column_names)} columns, {self.row_count} rows")
-            
-            # Handle button clicks for row navigation
-            if self.df is not None and self.row_count > 0:
-                if next_row:
-                    selected_row = min(selected_row + 1, self.row_count - 1)
-                    print(f"Next row: {selected_row}")
-                elif prev_row:
-                    selected_row = max(selected_row - 1, 0)
-                    print(f"Previous row: {selected_row}")
-                elif first_row:
-                    selected_row = 0
-                    print(f"First row: {selected_row}")
-                elif last_row:
-                    selected_row = self.row_count - 1
-                    print(f"Last row: {selected_row}")
+                if update_csv:
+                    print("CSV updated - outputs will be regenerated")
             
             # Validate selected row
             if selected_row >= self.row_count:
