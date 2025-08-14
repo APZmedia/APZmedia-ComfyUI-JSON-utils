@@ -23,7 +23,7 @@ class APZmediaDynamicCSVReader:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "csv_path": ("STRING", {"default": "", "tooltip": "Path to the CSV file"}),
+                "csv_path": ("STRING", {"default": "/path/to/your/file.csv", "tooltip": "Path to the CSV file (e.g., /Users/username/Documents/data.csv)"}),
                 "selected_row": ("INT", {"default": 0, "min": 0, "max": 10000, "step": 1, "tooltip": "Row index to extract (0-based)"}),
                 "delimiter": ("STRING", {"default": ",", "tooltip": "CSV delimiter character"}),
                 "encoding": ("STRING", {"default": "utf-8", "tooltip": "File encoding"}),
@@ -138,13 +138,13 @@ class APZmediaCSVReader:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "csv_path": ("STRING", {"default": "", "tooltip": "Path to the CSV file"}),
+                "csv_path": ("STRING", {"default": "/path/to/your/file.csv", "tooltip": "Path to the CSV file (e.g., /Users/username/Documents/data.csv)"}),
                 "selected_row": ("INT", {"default": 0, "min": 0, "max": 10000, "step": 1, "tooltip": "Row index to extract (0-based)"}),
                 "delimiter": ("STRING", {"default": ",", "tooltip": "CSV delimiter character"}),
                 "encoding": ("STRING", {"default": "utf-8", "tooltip": "File encoding"}),
             },
             "optional": {
-                "update_csv": ("BOOLEAN", {"default": False, "tooltip": "🔄 Click to update CSV and regenerate outputs"}),
+                "force_reload": ("INT", {"default": 0, "min": 0, "max": 1000, "step": 1, "tooltip": "Internal parameter for button trigger"}),
             }
         }
     
@@ -155,7 +155,7 @@ class APZmediaCSVReader:
     CATEGORY = "APZmedia/CSV Utils"
     
     def read_csv(self, csv_path: str, selected_row: int, delimiter: str = ",", 
-                encoding: str = "utf-8", update_csv: bool = False) -> tuple:
+                encoding: str = "utf-8", force_reload: int = 0) -> tuple:
         """
         Read CSV file and return structured data
         
@@ -164,7 +164,7 @@ class APZmediaCSVReader:
             selected_row: Row index to extract (0-based)
             delimiter: CSV delimiter character
             encoding: File encoding
-            update_csv: Boolean to trigger CSV update
+            force_reload: Internal parameter for button trigger
             
         Returns:
             tuple: (column_names, row_count, csv_info, error_message, row_data_json)
