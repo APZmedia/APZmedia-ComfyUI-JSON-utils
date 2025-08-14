@@ -33,16 +33,9 @@ class APZmediaDynamicCSVReader:
             }
         }
     
-    # Dynamic return types based on stored DataFrame
-    @classmethod
-    def RETURN_TYPES(cls):
-        # Start with base outputs, will be expanded dynamically
-        return ("STRING", "INT", "STRING", "STRING", "STRING")
-    
-    @classmethod
-    def RETURN_NAMES(cls):
-        # Start with base output names, will be expanded dynamically
-        return ("column_names", "row_count", "csv_info", "error_message", "csv_data_json")
+    # Static return types - we'll output JSON data for dynamic access
+    RETURN_TYPES = ("STRING", "INT", "STRING", "STRING", "STRING")
+    RETURN_NAMES = ("column_names", "row_count", "csv_info", "error_message", "csv_data_json")
     
     FUNCTION = "read_csv_dynamic"
     CATEGORY = "APZmedia/CSV Utils"
@@ -94,41 +87,13 @@ class APZmediaDynamicCSVReader:
             row_dict = self.df.iloc[selected_row].to_dict()
             row_data_json = json.dumps(row_dict, indent=2, ensure_ascii=False)
             
-            # Create dynamic outputs based on actual columns
-            outputs = [column_names_str, self.row_count, csv_info, "", row_data_json]
-            
-            # Add individual column outputs
-            for col_name in self.column_names:
-                value = self.df.iloc[selected_row][col_name]
-                if pd.isna(value):
-                    outputs.append("")
-                else:
-                    outputs.append(str(value))
-            
-            return tuple(outputs)
+            # Return basic outputs - column data is available in the JSON output
+            return (column_names_str, self.row_count, csv_info, "", row_data_json)
             
         except Exception as e:
             return "Error", 0, "Error occurred", str(e), "{}"
     
-    # Method to get dynamic return types based on stored DataFrame
-    def get_return_types(self):
-        """Get dynamic return types based on stored DataFrame"""
-        if self.df is None:
-            return ("STRING", "INT", "STRING", "STRING", "STRING")
-        
-        # Base types + one STRING for each column
-        base_types = ("STRING", "INT", "STRING", "STRING", "STRING")
-        column_types = ("STRING",) * len(self.column_names)
-        return base_types + column_types
-    
-    def get_return_names(self):
-        """Get dynamic return names based on stored DataFrame"""
-        if self.df is None:
-            return ("column_names", "row_count", "csv_info", "error_message", "csv_data_json")
-        
-        # Base names + actual column names
-        base_names = ("column_names", "row_count", "csv_info", "error_message", "csv_data_json")
-        return base_names + tuple(self.column_names)
+
 
 
 class APZmediaCSVReader:
