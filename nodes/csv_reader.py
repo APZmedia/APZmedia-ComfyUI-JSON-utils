@@ -27,6 +27,9 @@ class APZmediaDynamicCSVReader:
                 "selected_row": ("INT", {"default": 0, "min": 0, "max": 10000, "step": 1, "tooltip": "Row index to extract (0-based)"}),
                 "delimiter": ("STRING", {"default": ",", "tooltip": "CSV delimiter character"}),
                 "encoding": ("STRING", {"default": "utf-8", "tooltip": "File encoding"}),
+            },
+            "optional": {
+                "force_reload": ("INT", {"default": 0, "min": 0, "max": 1000, "step": 1, "tooltip": "Internal parameter for button trigger"}),
             }
         }
     
@@ -45,7 +48,7 @@ class APZmediaDynamicCSVReader:
     CATEGORY = "APZmedia/CSV Utils"
     
     def read_csv_dynamic(self, csv_path: str, selected_row: int, delimiter: str = ",", 
-                        encoding: str = "utf-8") -> tuple:
+                        encoding: str = "utf-8", force_reload: int = 0) -> tuple:
         """
         Dynamic CSV reading with stored DataFrame and regenerated outputs
         
@@ -63,13 +66,20 @@ class APZmediaDynamicCSVReader:
             if not csv_path or not os.path.exists(csv_path):
                 return "No file", 0, "File not found", "File not found", "{}"
             
-            # Load or refresh DataFrame when file path changes or DataFrame is None
-            if self.df is None or not hasattr(self, '_last_csv_path') or self._last_csv_path != csv_path:
+            # Load or refresh DataFrame when file path changes, DataFrame is None, or force_reload is triggered
+            if (self.df is None or 
+                not hasattr(self, '_last_csv_path') or 
+                self._last_csv_path != csv_path or
+                force_reload > getattr(self, '_last_force_reload', 0)):
+                
                 self.df = pd.read_csv(csv_path, delimiter=delimiter, encoding=encoding)
                 self.column_names = self.df.columns.tolist()
                 self.row_count = len(self.df)
                 self._last_csv_path = csv_path
+                self._last_force_reload = force_reload
                 print(f"CSV loaded: {len(self.column_names)} columns, {self.row_count} rows")
+                if force_reload > 0:
+                    print("CSV reloaded via button click")
             
             # Validate selected row
             if selected_row >= self.row_count:
