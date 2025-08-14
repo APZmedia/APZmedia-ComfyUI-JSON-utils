@@ -10,8 +10,137 @@ import json
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 
+class APZmediaDynamicCSVReader:
+    """Truly Dynamic CSV Reader that adapts output structure based on CSV columns"""
+    
+    def __init__(self):
+        self.df = None
+        self.column_names = []
+        self.row_count = 0
+        self.current_row = 0
+        self._cached_return_types = None
+        self._cached_return_names = None
+    
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "csv_path": ("STRING", {"default": "/path/to/your/file.csv", "tooltip": "Path to the CSV file (e.g., /Users/username/Documents/data.csv)"}),
+                "selected_row": ("INT", {"default": 0, "min": 0, "max": 10000, "step": 1, "tooltip": "Row index to extract (0-based)"}),
+                "delimiter": ("STRING", {"default": ",", "tooltip": "CSV delimiter character"}),
+                "encoding": ("STRING", {"default": "utf-8", "tooltip": "File encoding"}),
+            },
+            "optional": {
+                "refresh_trigger": ("STRING", {"default": "", "tooltip": "Internal trigger for button updates"}),
+            }
+        }
+    
+    @classmethod
+    def RETURN_TYPES(cls):
+        # Base return types - will be extended dynamically
+        return ("STRING", "INT", "STRING", "STRING", "STRING")
+    
+    @classmethod
+    def RETURN_NAMES(cls):
+        # Base return names - will be extended dynamically
+        return ("column_names", "row_count", "csv_info", "error_message", "csv_data_json")
+    
+    FUNCTION = "read_csv_dynamic"
+    CATEGORY = "APZmedia/CSV Utils"
+    
+    def read_csv_dynamic(self, csv_path: str, selected_row: int, delimiter: str = ",", 
+                        encoding: str = "utf-8", refresh_trigger: str = "") -> tuple:
+        """
+        Dynamic CSV reading with adaptive output structure
+        
+        Args:
+            csv_path: Path to the CSV file
+            selected_row: Row index to extract (0-based)
+            delimiter: CSV delimiter character
+            encoding: File encoding
+            refresh_trigger: Trigger for forcing reload
+            
+        Returns:
+            tuple: Dynamic outputs based on CSV structure
+        """
+        try:
+            # Check if file exists
+            if not csv_path or not os.path.exists(csv_path):
+                return ("No file", 0, "File not found", "File not found", "{}")
+            
+            # Load or refresh DataFrame when file path changes, DataFrame is None, or refresh_trigger changes
+            should_reload = (
+                self.df is None or 
+                not hasattr(self, '_last_csv_path') or 
+                self._last_csv_path != csv_path or
+                refresh_trigger != getattr(self, '_last_refresh_trigger', "")
+            )
+            
+            if should_reload:
+                self.df = pd.read_csv(csv_path, delimiter=delimiter, encoding=encoding)
+                self.column_names = self.df.columns.tolist()
+                self.row_count = len(self.df)
+                self._last_csv_path = csv_path
+                self._last_refresh_trigger = refresh_trigger
+                
+                # Update cached return types and names
+                self._update_return_structure()
+                
+                print(f"CSV loaded: {len(self.column_names)} columns, {self.row_count} rows")
+                print(f"Columns: {', '.join(self.column_names)}")
+                if refresh_trigger:
+                    print("CSV reloaded via button click - structure updated!")
+            
+            # Validate selected row
+            if selected_row >= self.row_count:
+                selected_row = 0
+            self.current_row = selected_row
+            
+            # Get basic info
+            column_names_str = ", ".join(self.column_names)
+            csv_info = f"File: {os.path.basename(csv_path)} | Rows: {self.row_count} | Columns: {len(self.column_names)} | Selected Row: {selected_row}"
+            
+            # Convert selected row to JSON
+            row_dict = self.df.iloc[selected_row].to_dict()
+            row_data_json = json.dumps(row_dict, indent=2, ensure_ascii=False)
+            
+            # Create base outputs
+            outputs = [column_names_str, self.row_count, csv_info, "", row_data_json]
+            
+            # Add individual column values
+            for col_name in self.column_names:
+                value = self.df.iloc[selected_row][col_name]
+                if pd.isna(value):
+                    outputs.append("")
+                else:
+                    outputs.append(str(value))
+            
+            return tuple(outputs)
+            
+        except Exception as e:
+            print(f"Error in CSV reader: {e}")
+            return ("Error", 0, "Error occurred", str(e), "{}")
+    
+    def _update_return_structure(self):
+        """Update the cached return types and names based on current CSV structure"""
+        if self.df is not None:
+            # Base types and names
+            base_types = ("STRING", "INT", "STRING", "STRING", "STRING")
+            base_names = ("column_names", "row_count", "csv_info", "error_message", "csv_data_json")
+            
+            # Add one STRING output for each column
+            column_types = ("STRING",) * len(self.column_names)
+            column_names = tuple(self.column_names)
+            
+            self._cached_return_types = base_types + column_types
+            self._cached_return_names = base_names + column_names
+            
+            print(f"Updated return structure: {len(self._cached_return_types)} outputs")
+            print(f"Column outputs: {', '.join(column_names)}")
+
+
 class APZmediaCSVReader:
-    """CSV Reader with session storage and button-triggered updates"""
+    """CSV Reader with fixed outputs for maximum compatibility"""
     
     def __init__(self):
         self.df = None
@@ -29,49 +158,55 @@ class APZmediaCSVReader:
                 "encoding": ("STRING", {"default": "utf-8", "tooltip": "File encoding"}),
             },
             "optional": {
-                "force_reload": ("INT", {"default": 0, "min": 0, "max": 1000, "step": 1, "tooltip": "Internal parameter for button trigger"}),
+                "refresh_trigger": ("STRING", {"default": "", "tooltip": "Internal trigger for button updates"}),
             }
         }
     
-    # Static return types - we'll output JSON data for dynamic access
-    RETURN_TYPES = ("STRING", "INT", "STRING", "STRING", "STRING")
-    RETURN_NAMES = ("column_names", "row_count", "csv_info", "error_message", "csv_data_json")
+    # Fixed outputs with descriptive names based on CSV column positions
+    RETURN_TYPES = ("STRING", "INT", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING")
+    RETURN_NAMES = ("column_names", "row_count", "csv_info", "error_message", "csv_data_json", "col_1", "col_2", "col_3", "col_4", "col_5", "col_6", "col_7", "col_8", "col_9", "col_10", "col_11", "col_12", "col_13", "col_14", "col_15", "col_16", "col_17", "col_18", "col_19", "col_20", "col_21", "col_22", "col_23", "col_24", "col_25")
     
-    FUNCTION = "read_csv_dynamic"
+    FUNCTION = "read_csv_fixed"
     CATEGORY = "APZmedia/CSV Utils"
     
-    def read_csv_dynamic(self, csv_path: str, selected_row: int, delimiter: str = ",", 
-                        encoding: str = "utf-8", force_reload: int = 0) -> tuple:
+    def read_csv_fixed(self, csv_path: str, selected_row: int, delimiter: str = ",", 
+                      encoding: str = "utf-8", refresh_trigger: str = "") -> tuple:
         """
-        Dynamic CSV reading with stored DataFrame and regenerated outputs
+        CSV reading with fixed output structure (25 column outputs max)
         
         Args:
             csv_path: Path to the CSV file
             selected_row: Row index to extract (0-based)
             delimiter: CSV delimiter character
             encoding: File encoding
+            refresh_trigger: Internal trigger for button updates
             
         Returns:
-            tuple: Dynamic outputs based on CSV structure
+            tuple: Fixed outputs with up to 25 column values
         """
         try:
             # Check if file exists
             if not csv_path or not os.path.exists(csv_path):
-                return "No file", 0, "File not found", "File not found", "{}"
+                error_outputs = ["No file", 0, "File not found", "File not found", "{}"] + [""] * 25
+                return tuple(error_outputs)
             
-            # Load or refresh DataFrame when file path changes, DataFrame is None, or force_reload is triggered
-            if (self.df is None or 
+            # Load or refresh DataFrame when file path changes, DataFrame is None, or refresh_trigger changes
+            should_reload = (
+                self.df is None or 
                 not hasattr(self, '_last_csv_path') or 
                 self._last_csv_path != csv_path or
-                force_reload > getattr(self, '_last_force_reload', 0)):
-                
+                refresh_trigger != getattr(self, '_last_refresh_trigger', "")
+            )
+            
+            if should_reload:
                 self.df = pd.read_csv(csv_path, delimiter=delimiter, encoding=encoding)
                 self.column_names = self.df.columns.tolist()
                 self.row_count = len(self.df)
                 self._last_csv_path = csv_path
-                self._last_force_reload = force_reload
+                self._last_refresh_trigger = refresh_trigger
                 print(f"CSV loaded: {len(self.column_names)} columns, {self.row_count} rows")
-                if force_reload > 0:
+                print(f"Columns: {', '.join(self.column_names)}")
+                if refresh_trigger:
                     print("CSV reloaded via button click")
             
             # Validate selected row
@@ -87,11 +222,26 @@ class APZmediaCSVReader:
             row_dict = self.df.iloc[selected_row].to_dict()
             row_data_json = json.dumps(row_dict, indent=2, ensure_ascii=False)
             
-            # Return basic outputs - column data is available in the JSON output
-            return (column_names_str, self.row_count, csv_info, "", row_data_json)
+            # Create outputs with individual column values
+            outputs = [column_names_str, self.row_count, csv_info, "", row_data_json]
+            
+            # Add individual column values (up to 25 columns)
+            for i in range(25):
+                if i < len(self.column_names):
+                    value = self.df.iloc[selected_row][self.column_names[i]]
+                    if pd.isna(value):
+                        outputs.append("")
+                    else:
+                        outputs.append(str(value))
+                else:
+                    outputs.append("")  # Empty for unused columns
+            
+            return tuple(outputs)
             
         except Exception as e:
-            return "Error", 0, "Error occurred", str(e), "{}"
+            # Return correct number of outputs even on error
+            error_outputs = ["Error", 0, "Error occurred", str(e), "{}"] + [""] * 25
+            return tuple(error_outputs)
     
 
 
@@ -338,4 +488,4 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "APZmediaCSVColumnExtractor": "APZmedia CSV Column Extractor",
     "APZmediaCSVReaderAdvanced": "APZmedia CSV Reader Advanced",
     "APZmediaCSVToJSON": "APZmedia CSV to JSON",
-} 
+}

@@ -22,7 +22,7 @@ This package provides a comprehensive set of utility nodes for ComfyUI that stre
 * **Real Update Button**: Click "🔄 Update CSV" button to reload data
 * **Session Storage**: Maintains data in memory for performance
 * **Row Selection**: Select specific rows to extract data
-* **JSON Output**: Returns CSV data as structured JSON for easy access
+* **Direct Column Outputs**: Individual outputs for each column (up to 15 columns)
 * **Error Handling**: Graceful handling of file errors and malformed CSV data
 * **Multiple Formats**: Supports various CSV delimiters and encodings
 
@@ -45,13 +45,14 @@ This package provides a comprehensive set of utility nodes for ComfyUI that stre
    * `selected_row` (INT): Row index to extract (0-based)
    * `delimiter` (STRING): CSV delimiter character
    * `encoding` (STRING): File encoding
-   * `force_reload` (INT): Internal parameter for button trigger
+   * `refresh_trigger` (STRING): Internal trigger for button updates
 * **Output Types**:  
    * `column_names` (STRING): List of column names
    * `row_count` (INT): Total number of rows in CSV
    * `csv_info` (STRING): File information and statistics
    * `error_message` (STRING): Any error messages
    * `csv_data_json` (STRING): Selected row data as JSON string
+   * `col_1` through `col_15`: Direct values from each column (unused columns are empty)
 
 ## How They Work
 
@@ -69,7 +70,7 @@ This package provides a comprehensive set of utility nodes for ComfyUI that stre
 2. **Session Storage**: Maintains DataFrame in memory for performance
 3. **Button Trigger**: "🔄 Update CSV" button increments force_reload parameter
 4. **Row Selection**: Extracts data from the selected row
-5. **JSON Output**: Converts row data to JSON string for easy access
+5. **Direct Outputs**: Provides individual outputs for each column (col_1, col_2, etc.)
 
 ## Use Cases
 
