@@ -16,15 +16,15 @@ This package provides a comprehensive set of utility nodes for ComfyUI that stre
 * **Nested Key Support**: Extract values from nested JSON structures
 * **Default Values**: Provide fallback values when keys don't exist
 
-### 2. **APZmedia Dynamic CSV Reader**
+### 2. **APZmedia CSV Reader**
 
 * **File Path Input**: Accept CSV file paths as input
-* **Dynamic Column Outputs**: Creates individual outputs for each column (up to 50 columns)
+* **Real Update Button**: Click "🔄 Update CSV" button to reload data
+* **Session Storage**: Maintains data in memory for performance
 * **Row Selection**: Select specific rows to extract data
-* **Configurable Column Limit**: Set maximum number of columns to process
+* **JSON Output**: Returns CSV data as structured JSON for easy access
 * **Error Handling**: Graceful handling of file errors and malformed CSV data
-* **Multiple Data Types**: Support for different column data types
-* **Direct Output Access**: Each column value available as a separate output
+* **Multiple Formats**: Supports various CSV delimiters and encodings
 
 ## Input and Output Types
 
@@ -38,20 +38,20 @@ This package provides a comprehensive set of utility nodes for ComfyUI that stre
    * `extracted_value` (STRING): The extracted value as a string
    * `value_type` (STRING): The type of the extracted value
 
-### **APZmedia Dynamic CSV Reader**
+### **APZmedia CSV Reader**
 
 * **Input Types**:  
    * `csv_path` (STRING): Path to the CSV file
    * `selected_row` (INT): Row index to extract (0-based)
    * `delimiter` (STRING): CSV delimiter character
    * `encoding` (STRING): File encoding
-   * `max_columns` (INT): Maximum number of columns to support (1-50)
+   * `force_reload` (INT): Internal parameter for button trigger
 * **Output Types**:  
    * `column_names` (STRING): List of column names
    * `row_count` (INT): Total number of rows in CSV
    * `csv_info` (STRING): File information and statistics
    * `error_message` (STRING): Any error messages
-   * `col_1` through `col_50`: Values from each column (unused columns are empty)
+   * `csv_data_json` (STRING): Selected row data as JSON string
 
 ## How They Work
 
@@ -63,13 +63,13 @@ This package provides a comprehensive set of utility nodes for ComfyUI that stre
 4. **Default Handling**: Returns default value if key is not found
 5. **Output Generation**: Provides the extracted value and its type
 
-### **APZmedia Dynamic CSV Reader**
+### **APZmedia CSV Reader**
 
 1. **File Reading**: Reads the CSV file from the specified path
-2. **Column Detection**: Analyzes the CSV structure to identify columns
-3. **Dynamic Output Creation**: Creates up to 50 individual outputs for columns
+2. **Session Storage**: Maintains DataFrame in memory for performance
+3. **Button Trigger**: "🔄 Update CSV" button increments force_reload parameter
 4. **Row Selection**: Extracts data from the selected row
-5. **Data Distribution**: Outputs each column's value to its respective output (col_1, col_2, etc.)
+5. **JSON Output**: Converts row data to JSON string for easy access
 
 ## Use Cases
 

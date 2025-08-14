@@ -10,8 +10,8 @@ import json
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 
-class APZmediaDynamicCSVReader:
-    """Truly dynamic CSV Reader that regenerates outputs based on CSV structure"""
+class APZmediaCSVReader:
+    """CSV Reader with session storage and button-triggered updates"""
     
     def __init__(self):
         self.df = None
@@ -95,72 +95,6 @@ class APZmediaDynamicCSVReader:
     
 
 
-
-class APZmediaCSVReader:
-    """Clean CSV Reader that outputs JSON data for easy access"""
-    
-    @classmethod
-    def INPUT_TYPES(cls):
-        return {
-            "required": {
-                "csv_path": ("STRING", {"default": "/path/to/your/file.csv", "tooltip": "Path to the CSV file (e.g., /Users/username/Documents/data.csv)"}),
-                "selected_row": ("INT", {"default": 0, "min": 0, "max": 10000, "step": 1, "tooltip": "Row index to extract (0-based)"}),
-                "delimiter": ("STRING", {"default": ",", "tooltip": "CSV delimiter character"}),
-                "encoding": ("STRING", {"default": "utf-8", "tooltip": "File encoding"}),
-            },
-            "optional": {
-                "force_reload": ("INT", {"default": 0, "min": 0, "max": 1000, "step": 1, "tooltip": "Internal parameter for button trigger"}),
-            }
-        }
-    
-    # Clean, minimal outputs - no clutter
-    RETURN_TYPES = ("STRING", "INT", "STRING", "STRING", "STRING")
-    RETURN_NAMES = ("column_names", "row_count", "csv_info", "error_message", "row_data_json")
-    FUNCTION = "read_csv"
-    CATEGORY = "APZmedia/CSV Utils"
-    
-    def read_csv(self, csv_path: str, selected_row: int, delimiter: str = ",", 
-                encoding: str = "utf-8", force_reload: int = 0) -> tuple:
-        """
-        Read CSV file and return structured data
-        
-        Args:
-            csv_path: Path to the CSV file
-            selected_row: Row index to extract (0-based)
-            delimiter: CSV delimiter character
-            encoding: File encoding
-            force_reload: Internal parameter for button trigger
-            
-        Returns:
-            tuple: (column_names, row_count, csv_info, error_message, row_data_json)
-        """
-        try:
-            # Check if file exists
-            if not csv_path or not os.path.exists(csv_path):
-                return "No file", 0, "File not found", "File not found", "{}"
-            
-            # Read CSV file
-            df = pd.read_csv(csv_path, delimiter=delimiter, encoding=encoding)
-            
-            # Get column names and row count
-            column_names = ", ".join(df.columns.tolist())
-            row_count = len(df)
-            
-            # Validate selected row
-            if selected_row >= row_count:
-                selected_row = 0
-            
-            # Create CSV info
-            csv_info = f"File: {os.path.basename(csv_path)} | Rows: {row_count} | Columns: {len(df.columns)} | Selected Row: {selected_row}"
-            
-            # Convert selected row to JSON for easy access
-            row_dict = df.iloc[selected_row].to_dict()
-            row_data_json = json.dumps(row_dict, indent=2, ensure_ascii=False)
-            
-            return column_names, row_count, csv_info, "", row_data_json
-            
-        except Exception as e:
-            return "Error", 0, "Error occurred", str(e), "{}"
 
 
 class APZmediaCSVColumnExtractor:
