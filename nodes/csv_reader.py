@@ -9,50 +9,54 @@ import pandas as pd
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 
-class APZmediaCSVReader:
-    """Read CSV files and provide dynamic outputs for each column"""
+class APZmediaDynamicCSVReader:
+    """Dynamic CSV Reader that creates outputs for each column"""
     
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
                 "csv_path": ("STRING", {"default": "", "tooltip": "Path to the CSV file"}),
-                "selected_row": ("INT", {"default": 0, "min": 0, "max": 10000, "step": 1}),
+                "selected_row": ("INT", {"default": 0, "min": 0, "max": 10000, "step": 1, "tooltip": "Row index to extract (0-based)"}),
                 "delimiter": ("STRING", {"default": ",", "tooltip": "CSV delimiter character"}),
                 "encoding": ("STRING", {"default": "utf-8", "tooltip": "File encoding"}),
-            },
-            "optional": {
-                "update_csv": ("BOOLEAN", {"default": False}),
+                "max_columns": ("INT", {"default": 20, "min": 1, "max": 50, "step": 1, "tooltip": "Maximum number of columns to support"}),
             }
         }
     
-    RETURN_TYPES = ("STRING", "INT", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING", "STRING")
-    RETURN_NAMES = ("column_names", "row_count", "col_1", "col_2", "col_3", "col_4", "col_5", "col_6", "col_7", "col_8")
-    FUNCTION = "read_csv_data"
+    # Dynamic return types - we'll use a large number to handle most CSV files
+    RETURN_TYPES = ("STRING", "INT", "STRING", "STRING") + ("STRING",) * 50  # 50 dynamic column outputs
+    RETURN_NAMES = ("column_names", "row_count", "csv_info", "error_message") + tuple(f"col_{i+1}" for i in range(50))
+    FUNCTION = "read_csv_dynamic"
     CATEGORY = "APZmedia/CSV Utils"
     
-    def read_csv_data(self, csv_path: str, selected_row: int, delimiter: str = ",", 
-                     encoding: str = "utf-8", update_csv: bool = False) -> tuple:
+    def read_csv_dynamic(self, csv_path: str, selected_row: int, delimiter: str = ",", 
+                        encoding: str = "utf-8", max_columns: int = 20) -> tuple:
         """
-        Read CSV file and extract data from selected row
+        Read CSV file and extract data from selected row with dynamic outputs
         
         Args:
             csv_path: Path to the CSV file
             selected_row: Row index to extract (0-based)
             delimiter: CSV delimiter character
             encoding: File encoding
-            update_csv: Boolean to trigger CSV refresh
+            max_columns: Maximum number of columns to support
             
         Returns:
-            tuple: (column_names, row_count, col_1, col_2, ..., col_8)
+            tuple: (column_names, row_count, csv_info, error_message, col_1, col_2, ..., col_50)
         """
         try:
             # Check if file exists
             if not csv_path or not os.path.exists(csv_path):
-                return "No file", 0, "", "", "", "", "", "", "", ""
+                empty_outputs = ["No file", 0, "File not found", "File not found"] + [""] * 50
+                return tuple(empty_outputs)
             
             # Read CSV file
             df = pd.read_csv(csv_path, delimiter=delimiter, encoding=encoding)
+            
+            # Limit columns to max_columns
+            if len(df.columns) > max_columns:
+                df = df.iloc[:, :max_columns]
             
             # Get column names and row count
             column_names = ", ".join(df.columns.tolist())
@@ -62,23 +66,29 @@ class APZmediaCSVReader:
             if selected_row >= row_count:
                 selected_row = 0
             
-            # Extract values from selected row
-            row_values = []
-            for i in range(8):  # Support up to 8 columns
+            # Create CSV info
+            csv_info = f"File: {os.path.basename(csv_path)} | Rows: {row_count} | Columns: {len(df.columns)} | Selected Row: {selected_row}"
+            
+            # Extract values from selected row for each column
+            column_values = []
+            for i in range(50):  # Support up to 50 columns
                 if i < len(df.columns):
                     value = df.iloc[selected_row, i]
                     # Handle NaN values
                     if pd.isna(value):
-                        row_values.append("")
+                        column_values.append("")
                     else:
-                        row_values.append(str(value))
+                        column_values.append(str(value))
                 else:
-                    row_values.append("")
+                    column_values.append("")  # Empty for unused columns
             
-            return (column_names, row_count) + tuple(row_values)
+            # Return all outputs
+            return (column_names, row_count, csv_info, "") + tuple(column_values)
             
         except Exception as e:
-            return f"Error: {str(e)}", 0, "", "", "", "", "", "", "", ""
+            # Return error values for all outputs
+            error_outputs = [f"Error: {str(e)}", 0, "Error occurred", str(e)] + [""] * 50
+            return tuple(error_outputs)
 
 
 class APZmediaCSVReaderAdvanced:
@@ -229,13 +239,13 @@ class APZmediaCSVToJSON:
 
 # Node class mappings
 NODE_CLASS_MAPPINGS = {
-    "APZmediaCSVReader": APZmediaCSVReader,
+    "APZmediaDynamicCSVReader": APZmediaDynamicCSVReader,
     "APZmediaCSVReaderAdvanced": APZmediaCSVReaderAdvanced,
     "APZmediaCSVToJSON": APZmediaCSVToJSON,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "APZmediaCSVReader": "APZmedia CSV Reader",
+    "APZmediaDynamicCSVReader": "APZmedia Dynamic CSV Reader",
     "APZmediaCSVReaderAdvanced": "APZmedia CSV Reader Advanced",
     "APZmediaCSVToJSON": "APZmedia CSV to JSON",
 } 

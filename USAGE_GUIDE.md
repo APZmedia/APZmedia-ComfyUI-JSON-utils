@@ -94,33 +94,43 @@ Result: value_1="John", value_2="30", value_3="NYC"
 
 ## CSV Utility Nodes
 
-### 1. APZmedia CSV Reader
+### 1. APZmedia Dynamic CSV Reader
 
-**Purpose**: Read CSV files and provide outputs for each column.
+**Purpose**: Read CSV files and provide individual outputs for each column.
 
 **Inputs**:
 - `csv_path`: Path to the CSV file
 - `selected_row`: Row index to extract (0-based)
 - `delimiter`: CSV delimiter character
 - `encoding`: File encoding
-- `update_csv`: Boolean to trigger refresh
+- `max_columns`: Maximum number of columns to support (1-50)
 
 **Outputs**:
 - `column_names`: List of column names
 - `row_count`: Total number of rows
-- `col_1` through `col_8`: Values from each column
+- `csv_info`: File information and statistics
+- `error_message`: Any error messages
+- `col_1` through `col_50`: Values from each column (unused columns are empty)
 
 **Example Usage**:
 ```
 CSV File: examples/sample_data.csv
 Selected Row: 1
 Result: 
-  column_names: "shot_id,shot_name,duration,passes,status,artist,priority"
+  column_names: "Group,Prompt,Neg-Prompt,Aspect-ratio,Height,Width,seed,seed-mode,cfg,seed-type"
   row_count: 5
-  col_1: "sw_0020"
-  col_2: "Battle Scene"
-  col_3: "120.0"
-  ...
+  csv_info: "File: sample_data.csv | Rows: 5 | Columns: 10 | Selected Row: 1"
+  col_1: "Character"
+  col_2: "Portrait of a warrior, detailed armor, dramatic lighting"
+  col_3: "blurry, low quality, distorted"
+  col_4: "4:3"
+  col_5: "1024"
+  col_6: "768"
+  col_7: "67890"
+  col_8: "fixed"
+  col_9: "8.0"
+  col_10: "normal"
+  col_11 through col_50: "" (empty for unused columns)
 ```
 
 ### 2. APZmedia CSV Reader Advanced

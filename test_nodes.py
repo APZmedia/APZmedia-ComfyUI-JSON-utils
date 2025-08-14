@@ -33,23 +33,47 @@ def test_json_key_extractor():
     
     print("✓ JSON Key Extractor test passed\n")
 
-def test_csv_reader():
-    """Test CSV Reader functionality"""
-    print("Testing CSV Reader...")
+def test_dynamic_csv_reader():
+    """Test Dynamic CSV Reader functionality"""
+    print("Testing Dynamic CSV Reader...")
     
     # Import the node
-    from nodes.csv_reader import APZmediaCSVReader
+    from nodes.csv_reader import APZmediaDynamicCSVReader
     
     # Create instance
-    node = APZmediaCSVReader()
+    node = APZmediaDynamicCSVReader()
     
     # Test with sample CSV
     csv_path = "examples/sample_data.csv"
     if os.path.exists(csv_path):
-        result = node.read_csv_data(csv_path, 0, ",", "utf-8")
+        result = node.read_csv_dynamic(csv_path, 0, ",", "utf-8", 20)
         print(f"CSV reading result: {result[0]} (columns), {result[1]} (rows)")
-        print(f"First row data: {result[2:6]}")
-        print("✓ CSV Reader test passed\n")
+        print(f"CSV info: {result[2]}")
+        print(f"First few column values:")
+        for i in range(5):  # Show first 5 columns
+            print(f"  col_{i+1}: {result[4+i]}")
+        print("✓ Dynamic CSV Reader test passed\n")
+    else:
+        print("⚠ Sample CSV file not found, skipping test\n")
+
+def test_csv_reader_advanced():
+    """Test Advanced CSV Reader functionality"""
+    print("Testing Advanced CSV Reader...")
+    
+    # Import the node
+    from nodes.csv_reader import APZmediaCSVReaderAdvanced
+    
+    # Create instance
+    node = APZmediaCSVReaderAdvanced()
+    
+    # Test with sample CSV
+    csv_path = "examples/sample_data.csv"
+    if os.path.exists(csv_path):
+        result = node.read_csv_advanced(csv_path, 1, "0,1,2", ",", "utf-8")
+        print(f"Advanced CSV reading result: {result[0]} (columns), {result[1]} (rows)")
+        print(f"Selected columns: {result[2]}")
+        print(f"Row data: {result[3]}")
+        print("✓ Advanced CSV Reader test passed\n")
     else:
         print("⚠ Sample CSV file not found, skipping test\n")
 
@@ -78,7 +102,8 @@ def main():
     
     try:
         test_json_key_extractor()
-        test_csv_reader()
+        test_dynamic_csv_reader()
+        test_csv_reader_advanced()
         test_json_utils()
         print("All tests completed successfully!")
     except Exception as e:
