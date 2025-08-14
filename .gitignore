@@ -59,4 +59,7 @@ logs/
 
 # Test files
 test_*.py
-*_test.py 
+*_test.py
+
+# Documentation notes
+.notes/ 
