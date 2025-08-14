@@ -1,0 +1,4 @@
+"User ID","First Name","Last Name","Email Address","Phone Number","Department Name","Salary Amount","Start Date","Is Active?","Manager ID","Office Location","Technical Skills","Current Projects","Performance Rating","Last Review Date","Additional Notes"
+1,"John","Doe","john.doe@email.com","555-0101","Engineering","75000","2023-01-15","true","101","New York","Python, Java, React","Project A, Project B","Excellent","2024-01-15","Top performer"
+2,"Jane","Smith","jane.smith@email.com","555-0102","Marketing","65000","2023-02-20","true","102","London","Photoshop, SEO, Analytics","Campaign X","Good","2024-02-20","Creative team lead"
+3,"Mike","Johnson","mike.johnson@email.com","555-0103","Sales","60000","2023-03-10","false","103","Paris","CRM, Salesforce, Negotiation","Region North","Average","2024-03-10","On leave" 

@@ -1,0 +1,6 @@
+ID,FirstName,LastName,Email,Phone,Department,Salary,StartDate,IsActive
+1,John,Doe,john.doe@email.com,555-0101,Engineering,75000,2023-01-15,true
+2,Jane,Smith,jane.smith@email.com,555-0102,Marketing,65000,2023-02-20,true
+3,Mike,Johnson,mike.johnson@email.com,555-0103,Sales,60000,2023-03-10,false
+4,Sarah,Williams,sarah.williams@email.com,555-0104,Engineering,80000,2023-04-05,true
+5,David,Brown,david.brown@email.com,555-0105,HR,55000,2023-05-12,true 

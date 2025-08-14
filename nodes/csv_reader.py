@@ -27,7 +27,13 @@ class APZmediaDynamicCSVReader:
                 "selected_row": ("INT", {"default": 0, "min": 0, "max": 10000, "step": 1, "tooltip": "Row index to extract (0-based)"}),
                 "delimiter": ("STRING", {"default": ",", "tooltip": "CSV delimiter character"}),
                 "encoding": ("STRING", {"default": "utf-8", "tooltip": "File encoding"}),
-                "refresh_csv": ("BOOLEAN", {"default": False, "tooltip": "Click to refresh CSV data and regenerate outputs"}),
+            },
+            "optional": {
+                "refresh_csv": ("BUTTON", {"default": "🔄 Refresh CSV"}),
+                "next_row": ("BUTTON", {"default": "⏭️ Next Row"}),
+                "prev_row": ("BUTTON", {"default": "⏮️ Previous Row"}),
+                "first_row": ("BUTTON", {"default": "⏪ First Row"}),
+                "last_row": ("BUTTON", {"default": "⏩ Last Row"}),
             }
         }
     
@@ -46,7 +52,9 @@ class APZmediaDynamicCSVReader:
     CATEGORY = "APZmedia/CSV Utils"
     
     def read_csv_dynamic(self, csv_path: str, selected_row: int, delimiter: str = ",", 
-                        encoding: str = "utf-8", refresh_csv: bool = False) -> tuple:
+                        encoding: str = "utf-8", refresh_csv: bool = False, 
+                        next_row: bool = False, prev_row: bool = False, 
+                        first_row: bool = False, last_row: bool = False) -> tuple:
         """
         Dynamic CSV reading with stored DataFrame and regenerated outputs
         
@@ -71,6 +79,21 @@ class APZmediaDynamicCSVReader:
                 self.column_names = self.df.columns.tolist()
                 self.row_count = len(self.df)
                 print(f"CSV loaded: {len(self.column_names)} columns, {self.row_count} rows")
+            
+            # Handle button clicks for row navigation
+            if self.df is not None and self.row_count > 0:
+                if next_row:
+                    selected_row = min(selected_row + 1, self.row_count - 1)
+                    print(f"Next row: {selected_row}")
+                elif prev_row:
+                    selected_row = max(selected_row - 1, 0)
+                    print(f"Previous row: {selected_row}")
+                elif first_row:
+                    selected_row = 0
+                    print(f"First row: {selected_row}")
+                elif last_row:
+                    selected_row = self.row_count - 1
+                    print(f"Last row: {selected_row}")
             
             # Validate selected row
             if selected_row >= self.row_count:
@@ -133,7 +156,9 @@ class APZmediaCSVReader:
                 "selected_row": ("INT", {"default": 0, "min": 0, "max": 10000, "step": 1, "tooltip": "Row index to extract (0-based)"}),
                 "delimiter": ("STRING", {"default": ",", "tooltip": "CSV delimiter character"}),
                 "encoding": ("STRING", {"default": "utf-8", "tooltip": "File encoding"}),
-                "refresh_csv": ("BOOLEAN", {"default": False, "tooltip": "Click to refresh CSV data"}),
+            },
+            "optional": {
+                "refresh_csv": ("BUTTON", {"default": "🔄 Refresh CSV"}),
             }
         }
     

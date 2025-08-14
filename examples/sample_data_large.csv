@@ -1,0 +1,11 @@
+ID,Name,Category,Value,Status,Priority,Description,Date,Location,Tags
+1,Task Alpha,Development,1000,Active,High,"Implement new feature",2024-01-01,Office,"urgent,frontend"
+2,Task Beta,Testing,500,Completed,Medium,"Unit tests for module",2024-01-02,Remote,"testing,backend"
+3,Task Gamma,Design,750,Active,Low,"UI mockups",2024-01-03,Office,"design,ui"
+4,Task Delta,Documentation,300,Pending,Medium,"API documentation",2024-01-04,Remote,"docs,api"
+5,Task Epsilon,Deployment,1200,Active,High,"Production deployment",2024-01-05,Office,"deploy,prod"
+6,Task Zeta,Research,400,Completed,Low,"Market analysis",2024-01-06,Remote,"research,market"
+7,Task Eta,Planning,600,Active,Medium,"Sprint planning",2024-01-07,Office,"planning,agile"
+8,Task Theta,Review,250,Completed,Low,"Code review",2024-01-08,Remote,"review,code"
+9,Task Iota,Meeting,150,Active,Medium,"Team standup",2024-01-09,Office,"meeting,standup"
+10,Task Kappa,Bug Fix,800,Active,High,"Critical bug fix",2024-01-10,Remote,"bug,urgent" 
