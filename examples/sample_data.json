@@ -1,0 +1,32 @@
+{
+  "project": {
+    "name": "Star Wars Episode IX",
+    "type": "VFX",
+    "status": "completed"
+  },
+  "shots": [
+    {
+      "id": "sw_0010",
+      "name": "Opening Scene",
+      "duration": 45.5,
+      "passes": ["comp", "roto", "paint"]
+    },
+    {
+      "id": "sw_0020", 
+      "name": "Battle Scene",
+      "duration": 120.0,
+      "passes": ["comp", "roto", "paint", "fx"]
+    },
+    {
+      "id": "sw_0030",
+      "name": "Final Scene",
+      "duration": 30.0,
+      "passes": ["comp", "roto"]
+    }
+  ],
+  "metadata": {
+    "created": "2024-01-15",
+    "version": "1.0.0",
+    "artist": "John Doe"
+  }
+} 

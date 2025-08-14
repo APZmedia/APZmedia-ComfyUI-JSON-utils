@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "comfyui-apzmedia-json-utils"
+version = "0.1.0"
+description = "APZmedia ComfyUI JSON and CSV Utility Nodes"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Pablo Apiolazza", email = "pablo@apzmedia.com"}
+]
+maintainers = [
+    {name = "Pablo Apiolazza", email = "pablo@apzmedia.com"}
+]
+keywords = ["comfyui", "vfx", "json", "csv", "utility", "nodes"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "pandas>=1.3.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/APZmedia/ComfyUI-APZmedia-JSON-utils"
+Repository = "https://github.com/APZmedia/ComfyUI-APZmedia-JSON-utils"
+Issues = "https://github.com/APZmedia/ComfyUI-APZmedia-JSON-utils/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "black>=21.0",
+    "flake8>=3.8",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["nodes*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"] 

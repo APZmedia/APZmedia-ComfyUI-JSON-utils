@@ -1,0 +1,6 @@
+Group,Prompt,Neg-Prompt,Aspect-ratio,Height,Width,seed,seed-mode,cfg,seed-type
+Background,"A beautiful sunset over mountains, cinematic lighting, high quality","blurry, low quality, distorted",16:9,1080,1920,12345,random,7.5,normal
+Character,"Portrait of a warrior, detailed armor, dramatic lighting","blurry, low quality, distorted",4:3,1024,768,67890,fixed,8.0,normal
+Landscape,"Ancient forest with mist, ethereal atmosphere, photorealistic","blurry, low quality, distorted",21:9,1080,2560,54321,random,6.5,normal
+Closeup,"Detailed closeup of eyes, emotional expression, studio lighting","blurry, low quality, distorted",1:1,1024,1024,98765,fixed,9.0,normal
+Action,"Dynamic action scene, motion blur, intense lighting","blurry, low quality, distorted",16:9,1080,1920,13579,random,7.0,normal 
