@@ -1,0 +1,12 @@
+include README.md
+include LICENSE
+include requirements.txt
+include pyproject.toml
+include *.py
+include nodes/*.py
+include web/js/*.js
+include examples/*.csv
+include examples/*.json
+recursive-include .notes *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co] 

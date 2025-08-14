@@ -1,8 +1,10 @@
 # APZmedia ComfyUI JSON and CSV Utility Nodes
 
+A collection of utility nodes for JSON and CSV data processing in ComfyUI workflows. Features dynamic CSV reading with real-time button updates and comprehensive JSON processing capabilities.
+
 ## Overview
 
-This package provides a comprehensive set of utility nodes for ComfyUI that streamline JSON and CSV data processing for VFX workflows. The tools include **JSON Key Extractor**, **CSV Reader**, and other data processing utilities designed to integrate seamlessly with ComfyUI's node-based workflow system.
+This package provides a comprehensive set of utility nodes for ComfyUI that streamline JSON and CSV data processing for VFX workflows. The tools include **JSON Key Extractor**, **Dynamic CSV Reader**, and other data processing utilities designed to integrate seamlessly with ComfyUI's node-based workflow system.
 
 ## Features
 
@@ -94,17 +96,49 @@ This package provides a comprehensive set of utility nodes for ComfyUI that stre
 
 ## Installation
 
-1. **Clone or download** this repository to your ComfyUI `custom_nodes` directory
-2. **Install dependencies**: `pip install -e .`
-3. **Restart ComfyUI** to load the new utility nodes
-4. **Find tools** in the "APZmedia" category in the node menu
+### Method 1: ComfyUI Manager (Recommended)
+1. Open ComfyUI
+2. Go to Manager → Install
+3. Search for "APZmedia JSON Utils"
+4. Click Install
+
+### Method 2: Manual Installation
+1. Clone this repository to your ComfyUI `custom_nodes` directory:
+   ```bash
+   cd ComfyUI/custom_nodes
+   git clone https://github.com/APZmedia/ComfyUI-APZmedia-JSON-utils.git
+   ```
+2. Install dependencies:
+   ```bash
+   cd ComfyUI-APZmedia-JSON-utils
+   pip install -r requirements.txt
+   ```
+3. Restart ComfyUI to load the new utility nodes
+4. Find tools in the "APZmedia" category in the node menu
 
 ## Dependencies
 
-* `json`: For JSON parsing and validation
-* `csv`: For CSV file reading and processing
-* `pandas`: For advanced CSV processing (optional)
+* `pandas>=1.3.0`: For advanced CSV processing and data manipulation
 * `ComfyUI`: The main application
+
+## Features
+
+### 🎯 **Dynamic CSV Reader with Real Buttons**
+- **Real Update Button**: Click "🔄 Update CSV" button to reload data
+- **Dynamic Outputs**: Automatically creates outputs based on CSV columns
+- **Session Storage**: Maintains data in memory for performance
+- **Multiple Formats**: Supports various CSV delimiters and encodings
+
+### 🔧 **JSON Processing Utilities**
+- **Key Extraction**: Extract values from JSON using dynamic key names
+- **Multi-Key Support**: Extract multiple keys simultaneously
+- **Nested Path Support**: Access deeply nested JSON values
+- **Validation**: Built-in JSON validation and error handling
+
+### 📊 **Sample Data Included**
+- Multiple CSV examples for testing different scenarios
+- JSON sample files for validation
+- Comprehensive test scripts
 
 ## License
 

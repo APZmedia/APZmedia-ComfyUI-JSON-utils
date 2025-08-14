@@ -14,11 +14,11 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
     requirements = [line.strip() for line in fh if line.strip() and not line.startswith("#")]
 
 setup(
-    name="comfyui-apzmedia-json-utils",
+    name="ComfyUI-APZmedia-JSON-utils",
     version="0.1.0",
     author="Pablo Apiolazza",
     author_email="pablo@apzmedia.com",
-    description="APZmedia ComfyUI JSON and CSV Utility Nodes",
+    description="APZmedia ComfyUI JSON and CSV Utility Nodes - Dynamic CSV reading and JSON processing utilities",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/APZmedia/ComfyUI-APZmedia-JSON-utils",

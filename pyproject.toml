@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "comfyui-apzmedia-json-utils"
+name = "ComfyUI-APZmedia-JSON-utils"
 version = "0.1.0"
-description = "APZmedia ComfyUI JSON and CSV Utility Nodes"
+description = "APZmedia ComfyUI JSON and CSV Utility Nodes - Dynamic CSV reading and JSON processing utilities"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
