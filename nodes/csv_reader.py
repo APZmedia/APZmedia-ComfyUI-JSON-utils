@@ -29,7 +29,7 @@ class APZmediaDynamicCSVReader:
                 "encoding": ("STRING", {"default": "utf-8", "tooltip": "File encoding"}),
             },
             "optional": {
-                "update_csv": ("BUTTON",),
+                "update_csv": ("BUTTON", {"default": "🔄 Update CSV"}),
             }
         }
     
@@ -139,7 +139,7 @@ class APZmediaCSVReader:
                 "encoding": ("STRING", {"default": "utf-8", "tooltip": "File encoding"}),
             },
             "optional": {
-                "refresh_csv": ("BUTTON", {"default": "🔄 Refresh CSV"}),
+                "update_csv": ("BUTTON", {"default": "🔄 Update CSV"}),
             }
         }
     
@@ -150,7 +150,7 @@ class APZmediaCSVReader:
     CATEGORY = "APZmedia/CSV Utils"
     
     def read_csv(self, csv_path: str, selected_row: int, delimiter: str = ",", 
-                encoding: str = "utf-8", refresh_csv: bool = False) -> tuple:
+                encoding: str = "utf-8", update_csv: bool = False) -> tuple:
         """
         Read CSV file and return structured data
         
@@ -159,7 +159,7 @@ class APZmediaCSVReader:
             selected_row: Row index to extract (0-based)
             delimiter: CSV delimiter character
             encoding: File encoding
-            refresh_csv: Boolean to trigger CSV refresh
+            update_csv: Boolean to trigger CSV update
             
         Returns:
             tuple: (column_names, row_count, csv_info, error_message, row_data_json)
