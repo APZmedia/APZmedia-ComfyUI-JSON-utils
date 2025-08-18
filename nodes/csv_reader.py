@@ -64,9 +64,16 @@ class APZmediaDynamicCSVReader:
             tuple: Dynamic outputs based on CSV structure
         """
         try:
+            # Normalize and validate the CSV path
+            if not csv_path:
+                return ("No file", 0, "File not found", "No file path provided", "{}")
+            
+            # Normalize the path to handle different path separators
+            csv_path = os.path.normpath(csv_path.strip())
+            
             # Check if file exists
-            if not csv_path or not os.path.exists(csv_path):
-                return ("No file", 0, "File not found", "File not found", "{}")
+            if not os.path.exists(csv_path):
+                return ("No file", 0, "File not found", f"File not found: {csv_path}", "{}")
             
             # Load or refresh DataFrame when file path changes, DataFrame is None, or refresh_trigger changes
             should_reload = (
@@ -185,9 +192,17 @@ class APZmediaCSVReader:
             tuple: Fixed outputs with up to 25 column values
         """
         try:
+            # Normalize and validate the CSV path
+            if not csv_path:
+                error_outputs = ["No file", 0, "File not found", "No file path provided", "{}"] + [""] * 25
+                return tuple(error_outputs)
+            
+            # Normalize the path to handle different path separators
+            csv_path = os.path.normpath(csv_path.strip())
+            
             # Check if file exists
-            if not csv_path or not os.path.exists(csv_path):
-                error_outputs = ["No file", 0, "File not found", "File not found", "{}"] + [""] * 25
+            if not os.path.exists(csv_path):
+                error_outputs = ["No file", 0, "File not found", f"File not found: {csv_path}", "{}"] + [""] * 25
                 return tuple(error_outputs)
             
             # Load or refresh DataFrame when file path changes, DataFrame is None, or refresh_trigger changes
@@ -284,9 +299,16 @@ class APZmediaCSVColumnExtractor:
             tuple: (column_names, row_count, csv_info, error_message, col_1, col_2, col_3)
         """
         try:
+            # Normalize and validate the CSV path
+            if not csv_path:
+                return "No file", 0, "File not found", "No file path provided", "", "", ""
+            
+            # Normalize the path to handle different path separators
+            csv_path = os.path.normpath(csv_path.strip())
+            
             # Check if file exists
-            if not csv_path or not os.path.exists(csv_path):
-                return "No file", 0, "File not found", "File not found", "", "", ""
+            if not os.path.exists(csv_path):
+                return "No file", 0, "File not found", f"File not found: {csv_path}", "", "", ""
             
             # Read CSV file
             df = pd.read_csv(csv_path, delimiter=delimiter, encoding=encoding)
@@ -363,9 +385,16 @@ class APZmediaCSVReaderAdvanced:
             tuple: (column_names, row_count, selected_columns, row_data, csv_info, error_message, status)
         """
         try:
+            # Normalize and validate the CSV path
+            if not csv_path:
+                return "No file", 0, "", "", "", "No file path provided", "error"
+            
+            # Normalize the path to handle different path separators
+            csv_path = os.path.normpath(csv_path.strip())
+            
             # Check if file exists
-            if not csv_path or not os.path.exists(csv_path):
-                return "No file", 0, "", "", "", "File not found", "error"
+            if not os.path.exists(csv_path):
+                return "No file", 0, "", "", "", f"File not found: {csv_path}", "error"
             
             # Read CSV file
             df = pd.read_csv(csv_path, delimiter=delimiter, encoding=encoding)
@@ -395,12 +424,12 @@ class APZmediaCSVReaderAdvanced:
                     
                     value = df.iloc[selected_row, idx]
                     if pd.isna(value):
-                        row_data_parts.append("(empty)")
+                        row_data_parts.append("")
                     else:
                         row_data_parts.append(str(value))
                 else:
                     selected_cols.append(f"col_{idx}")
-                    row_data_parts.append("(invalid)")
+                    row_data_parts.append("")
             
             selected_columns = ", ".join(selected_cols)
             row_data = " | ".join(row_data_parts)
@@ -448,9 +477,16 @@ class APZmediaCSVToJSON:
             tuple: (json_output, error_message, row_count)
         """
         try:
+            # Normalize and validate the CSV path
+            if not csv_path:
+                return "{}", "No file path provided", 0
+            
+            # Normalize the path to handle different path separators
+            csv_path = os.path.normpath(csv_path.strip())
+            
             # Check if file exists
-            if not csv_path or not os.path.exists(csv_path):
-                return "{}", "File not found", 0
+            if not os.path.exists(csv_path):
+                return "{}", f"File not found: {csv_path}", 0
             
             # Read CSV file
             df = pd.read_csv(csv_path, delimiter=delimiter, encoding=encoding)
