@@ -395,12 +395,12 @@ class APZmediaCSVReaderAdvanced:
                     
                     value = df.iloc[selected_row, idx]
                     if pd.isna(value):
-                        row_data_parts.append(f"{col_name}: (empty)")
+                        row_data_parts.append("(empty)")
                     else:
-                        row_data_parts.append(f"{col_name}: {str(value)}")
+                        row_data_parts.append(str(value))
                 else:
                     selected_cols.append(f"col_{idx}")
-                    row_data_parts.append(f"col_{idx}: (invalid)")
+                    row_data_parts.append("(invalid)")
             
             selected_columns = ", ".join(selected_cols)
             row_data = " | ".join(row_data_parts)
