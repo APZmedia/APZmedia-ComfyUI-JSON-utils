@@ -46,12 +46,10 @@ def test_dynamic_csv_reader():
     # Test with sample CSV
     csv_path = "examples/sample_data.csv"
     if os.path.exists(csv_path):
-        result = node.read_csv_dynamic(csv_path, 0, ",", "utf-8", 20)
+        result = node.read_csv_dynamic(csv_path, 0, ",", "utf-8", "")
         print(f"CSV reading result: {result[0]} (columns), {result[1]} (rows)")
         print(f"CSV info: {result[2]}")
-        print(f"First few column values:")
-        for i in range(5):  # Show first 5 columns
-            print(f"  col_{i+1}: {result[4+i]}")
+        print(f"CSV data JSON (first 100 chars): {result[4][:100]}")
         print("✓ Dynamic CSV Reader test passed\n")
     else:
         print("⚠ Sample CSV file not found, skipping test\n")
