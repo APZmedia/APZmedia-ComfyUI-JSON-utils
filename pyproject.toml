@@ -48,6 +48,11 @@ dev = [
 where = ["."]
 include = ["nodes*"]
 
+[tool.comfy]
+PublisherId = "APZmedia"
+DisplayName = "APZmedia JSON Utils"
+Icon = ""
+
 [tool.black]
 line-length = 88
 target-version = ['py38']
